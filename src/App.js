@@ -53,15 +53,17 @@ function App() {
         const createQuestion = async () => {
             console.log('questionTxt', questionTxt)
             console.log('selectedCategory', selectedCategory)
-            let res = await fetch(`http://localhost3000/api/v1/categories/${selectedCategory.id}/questions`, {
+            let res = await fetch(`http://localhost:3000/api/v1/categories/${selectedCategory.id}/questions`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+                headers:{
+                    'Content-Type':'application/json'
                 },
                 body: JSON.stringify({questionTxt: questionTxt})
-            })
-            let data = await res.json()
-            console.log(data)
+              
+              });
+            //let data = await res.json()
+            //console.log(data)
+            console.log(2)
             fetchQuestions(selectedCategory)
             setQuestionTxt('')
             setShowQuestionForm(false)
@@ -70,7 +72,7 @@ function App() {
         const fetchAnswersForQuestion = async (q) => {
             console.log('fetch the answers for the question ', q)
             console.log(`http://localhost:3000/api/v1/questions/${q.id}/answers`)
-            let res = await fetch(`http://localhost3000/api/v1/questions/${q.id}/answers`)
+            let res = await fetch(`http://localhost:3000/api/v1/questions/${q.id}/answers`)
             let data = await res.json()
             console.log(data)
     
@@ -145,12 +147,12 @@ function App() {
 
 
                 {selectedCategory && questions && questions.length>0 && <div className={'flex justify-center px-24 w-full'}>
-                    <Collapse accordion className={'w-full'} onChange={onPanelChange}>
-                        {questions && questions.map((question) => {
+                    <Collapse accordion className={'w-full'} onChange={(onPanelChange)} >
+                        {questions && questions.map((question , index) => {
                             return <Panel header={question.questionTxt} key={question.id}>
 
                                 <ul>
-                                    {answers && answers[question.id] && answers[question.id].map((answer) => {
+                                    { answers && answers[question.id] && answers[question.id].map((answer) => {
                                         return <li key={answer.id}>{answer.answerTxt}</li>
                                     })}
                                 </ul>

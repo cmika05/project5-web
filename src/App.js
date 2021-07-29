@@ -19,11 +19,13 @@ function App() {
 
     const [showQuestionForm, setShowQuestionForm] = useState(false);
 
-    const [questionTxt, setQuestionTxt] = useState('');
+    const [showAnswerForm, setShowAnswerForm] = useState(false);
 
+    const [questionTxt, setQuestionTxt] = useState('');
+    const [AnswerTxt, setAnswerTxt] = useState('');
 
     const fetchCategories = async () => {
-        let res = await fetch(`http://localhost:3000/api/v1/categories`)
+        let res = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/categories`)
         let json = await res.json()
         console.log(json)
         setCategories(json)
@@ -36,10 +38,11 @@ function App() {
 
     const fetchQuestions = async (category) => {
       
-        let res = await fetch(`http://localhost:3000/api/v1/categories/${category.id}/questions`)
+        let res = await fetch(`${process.env.REACT_APP_API_URL}/v1/categories/${category.id}/questions`)
         let data = await res.json()
         console.log(data)
         setQuestions(data)
+      
     };
 
     const switchCategory = async (category) => {
@@ -53,7 +56,7 @@ function App() {
         const createQuestion = async () => {
             console.log('questionTxt', questionTxt)
             console.log('selectedCategory', selectedCategory)
-            let res = await fetch(`http://localhost:3000/api/v1/categories/${selectedCategory.id}/questions`, {
+            let res = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/categories/${selectedCategory.id}/questions`, {
                 method: 'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -68,11 +71,12 @@ function App() {
             setQuestionTxt('')
             setShowQuestionForm(false)
         };
-    
-        const fetchAnswersForQuestion = async (q) => {
+         
+      
+           const fetchAnswersForQuestion = async (q) => {
             console.log('fetch the answers for the question ', q)
-            console.log(`http://localhost:3000/api/v1/questions/${q.id}/answers`)
-            let res = await fetch(`http://localhost:3000/api/v1/questions/${q.id}/answers`)
+            console.log(`${process.env.REACT_APP_API_URL}/api/v1/questions/${q.id}/answers`)
+            let res = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/questions/${q.id}/answers`)
             let data = await res.json()
             console.log(data)
     
@@ -96,7 +100,7 @@ function App() {
     
         };
     
-      return (
+       return (
         <>
 
 
@@ -120,6 +124,21 @@ function App() {
 
             </Modal>
 
+          
+            <Modal title="New answers" visible={showQuestionForm} closable={false} footer={null}>
+            {selectedCategory && <div className={'w-full p-3'}>
+                    <textarea value={questionTxt}
+                              onChange={(ev) => setQuestionTxt(ev.currentTarget.value)}
+                              type="text"
+                              rows={4}
+                              className={'border p-1 w-full mb-4'}
+                              placeholder={'Enter the answer...'}/>
+
+                <button className={'p-2 bg-green-800 text-white uppercase font-bold rounded mr-4'} onClick={createQuestion}>Create answers</button>
+                <button className={'p-2 bg-red-800 text-white uppercase font-bold rounded'} onClick={() => setShowQuestionForm(false)}>Cancel</button>
+            </div>}
+
+            </Modal>
 
 <div className={'grid grid-cols-12'}>
     <div className={'col-span-12 md:col-span-2 font-bold text-2xl bg-red-200'}>
@@ -137,7 +156,8 @@ function App() {
 
     <div className={'col-span-12 border md:col-span-10 font-bold text-2xl bg-gray-400 h-96'}>
     {selectedCategory && <div className={'p-4'}>
-                    <button className={'col-span-12 border md:col-span-10'} onClick={() => setShowQuestionForm(true)}>New Question</button>
+                    <button className={'col-span-12 rounded md:col-span-10 bg-red-600 mr-4 py-1 px-1 uppercase font-bold'} onClick={() => setShowQuestionForm(true)}>New Question</button>
+                    <button className={'col-span-12 rounded md:col-span-10 bg-green-600 py-1 px-1 uppercase font-bold'} onClick={() => setShowQuestionForm(true)}>New Answer</button>
                 </div>}
 
 
